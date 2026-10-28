@@ -1,0 +1,65 @@
+{
+  "region": "제주특별자치도",
+  "topic": "제주 관광지·명소",
+  "items": [
+    { "name": "성산일출봉", "category": "자연 명소", "description": "바다 위로 솟은 분화구 모양의 화산체로 일출 명소이며 유네스코 세계자연유산에 포함", "score": 95, "selected": true, "source": "" },
+    { "name": "한라산", "category": "자연 명소", "description": "제주 중앙에 솟은 한국에서 가장 높은 산(해발 약 1,947m)으로 등산 코스가 여러 개", "score": 90, "selected": true, "source": "" },
+    { "name": "우도", "category": "자연 명소", "description": "성산 앞바다의 작은 섬으로 해안 도로와 해변을 따라 둘러보기 좋음", "score": 88, "selected": true, "source": "" },
+    { "name": "만장굴", "category": "자연 명소", "description": "화산 활동으로 생긴 용암동굴로 일부 구간을 관람할 수 있음", "score": 80, "selected": false, "source": "" },
+    { "name": "주상절리대", "category": "자연 명소", "description": "중문 해안의 기둥 모양 암석이 이어진 절벽", "score": 85, "selected": true, "source": "" },
+    { "name": "산방산", "category": "자연 명소", "description": "안덕면 평지 위에 종 모양으로 솟은 바위산", "score": 82, "selected": false, "source": "" },
+    { "name": "용머리해안", "category": "자연 명소", "description": "산방산 아래 바다로 뻗은 층층이 쌓인 사암 해안", "score": 78, "selected": false, "source": "" },
+    { "name": "쇠소깍", "category": "자연 명소", "description": "하천이 바다와 만나는 지점의 맑은 소(沼)와 기암 절벽", "score": 75, "selected": false, "source": "" },
+    { "name": "용두암", "category": "자연 명소", "description": "제주시 해안에 있는 용의 머리 모양 바위", "score": 65, "selected": false, "source": "" },
+    { "name": "송악산", "category": "자연 명소", "description": "대정읍 해안에 있는 오름으로 바다와 형제섬을 내려다볼 수 있음", "score": 80, "selected": false, "source": "" },
+
+    { "name": "천지연폭포", "category": "폭포", "description": "서귀포 시내 가까이에 있는 폭포로 산책로가 잘 되어 있음", "score": 72, "selected": false, "source": "" },
+    { "name": "정방폭포", "category": "폭포", "description": "바다로 곧장 떨어지는 서귀포의 폭포", "score": 70, "selected": false, "source": "" },
+
+    { "name": "새별오름", "category": "오름", "description": "제주시 애월 지역의 오름으로 억새와 석양 풍경으로 알려짐", "score": 85, "selected": true, "source": "" },
+    { "name": "용눈이오름", "category": "오름", "description": "구좌읍의 완만한 능선이 이어지는 오름", "score": 84, "selected": true, "source": "" },
+    { "name": "다랑쉬오름", "category": "오름", "description": "구좌읍에 있는 깊은 분화구가 있는 오름", "score": 82, "selected": false, "source": "" },
+    { "name": "거문오름", "category": "오름", "description": "용암동굴계를 만든 화산체로 유네스코 세계자연유산에 포함, 탐방 예약제로 운영", "score": 78, "selected": false, "source": "" },
+    { "name": "도두봉", "category": "오름", "description": "제주공항 가까운 해안의 작은 오름으로 짧게 오르기 좋음", "score": 68, "selected": false, "source": "" },
+
+    { "name": "협재해수욕장", "category": "해변", "description": "제주시 한림 지역의 해수욕장으로 맑은 바다와 비양도가 보임", "score": 90, "selected": true, "source": "" },
+    { "name": "금능해수욕장", "category": "해변", "description": "협재 옆에 있는 한림의 해수욕장", "score": 80, "selected": false, "source": "" },
+    { "name": "함덕해수욕장", "category": "해변", "description": "조천읍의 에메랄드빛 바다가 알려진 해수욕장", "score": 88, "selected": true, "source": "" },
+    { "name": "월정리해변", "category": "해변", "description": "구좌읍 해안의 카페와 바다 풍경이 알려진 해변", "score": 82, "selected": false, "source": "" },
+    { "name": "곽지해수욕장", "category": "해변", "description": "애월읍의 해수욕장으로 일몰이 알려져 있음", "score": 78, "selected": false, "source": "" },
+    { "name": "김녕해수욕장", "category": "해변", "description": "구좌읍의 얕고 투명한 바다가 있는 해수욕장", "score": 80, "selected": false, "source": "" },
+    { "name": "이호테우해변", "category": "해변", "description": "제주시 가까이에 있는 해변으로 말 모양 등대가 상징", "score": 72, "selected": false, "source": "" },
+    { "name": "중문색달해변", "category": "해변", "description": "중문관광단지 안에 있는 해변", "score": 76, "selected": false, "source": "" },
+    { "name": "표선해수욕장", "category": "해변", "description": "썰물 때 넓은 백사장이 드러나는 표선의 해수욕장", "score": 74, "selected": false, "source": "" },
+    { "name": "광치기해변", "category": "해변", "description": "성산일출봉이 바라보이는 해변", "score": 77, "selected": false, "source": "" },
+
+    { "name": "섭지코지", "category": "해안 산책", "description": "성산 해안의 곶으로 바다를 따라 산책할 수 있음", "score": 86, "selected": true, "source": "" },
+    { "name": "외돌개", "category": "해안 산책", "description": "바다에 홀로 선 바위와 올레길이 이어지는 서귀포 해안", "score": 76, "selected": false, "source": "" },
+
+    { "name": "비자림", "category": "공원·숲", "description": "구좌읍에 있는 오래된 비자나무 숲으로 산책로가 있음", "score": 85, "selected": true, "source": "" },
+    { "name": "사려니숲길", "category": "공원·숲", "description": "삼나무가 이어지는 숲길로 걷기에 좋음", "score": 86, "selected": true, "source": "" },
+    { "name": "절물자연휴양림", "category": "공원·숲", "description": "제주시 근교의 삼나무 숲 휴양림", "score": 74, "selected": false, "source": "" },
+    { "name": "한라수목원", "category": "공원·숲", "description": "제주시에 있는 제주 식물을 볼 수 있는 수목원", "score": 68, "selected": false, "source": "" },
+    { "name": "카멜리아힐", "category": "공원·숲", "description": "안덕면에 있는 동백나무 정원", "score": 78, "selected": false, "source": "" },
+
+    { "name": "오설록 티뮤지엄", "category": "박물관·미술관", "description": "안덕면 녹차밭 옆에 있는 차 박물관 겸 체험 공간", "score": 76, "selected": false, "source": "" },
+    { "name": "국립제주박물관", "category": "박물관·미술관", "description": "제주의 역사와 문화를 전시하는 국립 박물관", "score": 66, "selected": false, "source": "" },
+    { "name": "제주도립미술관", "category": "박물관·미술관", "description": "제주시에 있는 공립 미술관", "score": 62, "selected": false, "source": "" },
+    { "name": "이중섭미술관", "category": "박물관·미술관", "description": "서귀포에서 지낸 화가 이중섭을 기리는 미술관", "score": 64, "selected": false, "source": "" },
+    { "name": "김영갑갤러리두모악", "category": "박물관·미술관", "description": "제주 풍경을 담은 사진가 김영갑의 작품을 전시하는 갤러리", "score": 70, "selected": false, "source": "" },
+    { "name": "제주항공우주박물관", "category": "박물관·미술관", "description": "항공기와 우주 관련 전시를 하는 박물관", "score": 60, "selected": false, "source": "" },
+
+    { "name": "제주민속촌", "category": "역사·문화", "description": "옛 제주의 생활 모습을 재현한 민속 마을", "score": 66, "selected": false, "source": "" },
+    { "name": "제주 4·3 평화공원", "category": "역사·문화", "description": "제주 4·3 사건을 기억하는 평화공원과 기념관", "score": 72, "selected": false, "source": "" },
+    { "name": "삼성혈", "category": "역사·문화", "description": "탐라 시조 신화가 전해지는 유적", "score": 55, "selected": false, "source": "" },
+    { "name": "관덕정", "category": "역사·문화", "description": "제주시 구도심에 있는 조선시대 누정", "score": 55, "selected": false, "source": "" },
+    { "name": "제주목 관아", "category": "역사·문화", "description": "조선시대 제주목의 관아 터를 복원한 유적", "score": 60, "selected": false, "source": "" },
+
+    { "name": "동문시장", "category": "시장", "description": "제주시의 전통시장으로 먹거리와 특산물을 살 수 있음", "score": 80, "selected": true, "source": "" },
+    { "name": "서귀포매일올레시장", "category": "시장", "description": "서귀포 시내의 상설 시장", "score": 74, "selected": false, "source": "" },
+
+    { "name": "에코랜드", "category": "체험 시설", "description": "곶자왈 숲을 기차로 둘러보는 테마 공원", "score": 70, "selected": false, "source": "" },
+    { "name": "아쿠아플라넷 제주", "category": "체험 시설", "description": "성산 해안에 있는 대형 아쿠아리움", "score": 78, "selected": false, "source": "" },
+    { "name": "휴애리 자연생활공원", "category": "체험 시설", "description": "남원읍의 꽃 정원과 동물 먹이 주기 체험 공원", "score": 68, "selected": false, "source": "" }
+  ]
+}

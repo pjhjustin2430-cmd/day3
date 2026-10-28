@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제주 관광지·명소</title>
+    <style>
+        :root { --bg: #f4f7fb; --card: #fff; --ink: #172840; --muted: #64748b; --navy: #15385e; --orange: #ed7b29; --line: #dce5ee; }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif; line-height: 1.5; }
+        header { background: linear-gradient(118deg, #132e51, #236b9c); color: #fff; padding: 32px 20px 28px; }
+        .wrap { max-width: 1100px; margin: auto; padding: 0 16px; }
+        h1 { margin: 0 0 6px; font-size: clamp(24px, 4vw, 34px); }
+        header p { margin: 0; color: #dbe8f5; }
+        .controls { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0 10px; }
+        input[type=search], select { font: inherit; padding: 9px 12px; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+        input[type=search] { flex: 1 1 220px; }
+        .cats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+        .cats button { font: inherit; cursor: pointer; padding: 7px 13px; border-radius: 99px; border: 1px solid var(--line); background: #fff; color: var(--navy); }
+        .cats button[aria-pressed="true"] { background: var(--navy); color: #fff; border-color: var(--navy); }
+        .count { color: var(--muted); font-size: 14px; margin: 6px 0 12px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+        .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+        .card h3 { margin: 0; font-size: 18px; }
+        .badge { display: inline-block; font-size: 12px; font-weight: 700; color: #a4520f; background: #fff4e8; border-radius: 99px; padding: 2px 10px; align-self: flex-start; }
+        .desc { color: #3b4d63; font-size: 14px; flex: 1; }
+        .foot { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--muted); }
+        .score { font-weight: 800; color: var(--orange); }
+        .star { cursor: pointer; border: 0; background: none; font-size: 22px; line-height: 1; color: #c3ccd8; }
+        .star[aria-pressed="true"] { color: var(--orange); }
+        .src a { color: #2769a4; }
+        h2 { margin: 30px 0 10px; font-size: 20px; }
+        #wish { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 40px; }
+        #wish span { background: #fff; border: 1px solid #f3c9a3; border-radius: 99px; padding: 5px 12px; font-size: 14px; }
+        .empty { color: var(--muted); padding: 20px 0; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="wrap">
+            <h1 id="title"></h1>
+            <p>카테고리, 검색, 점수순 정렬로 제주 관광지를 골라 보고 ★로 "가 보고 싶은 곳"을 모아 보세요.</p>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <div class="controls">
+            <input type="search" id="q" placeholder="이름·설명으로 검색">
+            <select id="sort">
+                <option value="score">점수 높은 순</option>
+                <option value="name">이름 가나다순</option>
+            </select>
+        </div>
+        <div class="cats" id="cats"></div>
+        <div class="count" id="count"></div>
+        <div class="grid" id="grid"></div>
+
+        <h2>⭐ 가 보고 싶은 곳</h2>
+        <div id="wish"></div>
+    </main>
+
+    <script src="jeju_data.js"></script>
+    <script>
+        document.getElementById("title").textContent = DATA.topic
+        // 사용자가 ★ 눌러 고른 이름 목록. 처음에는 데이터의 selected 가 true 인 항목으로 시작한다.
+        // (브라우저에 저장해 두면 다시 열어도 유지됨. 저장이 막힌 환경에서는 그냥 메모리에만 둔다)
+        let picked = new Set(DATA.items.filter(i => i.selected).map(i => i.name))
+        try { const s = JSON.parse(localStorage.getItem("jejuPicked")); if (Array.isArray(s)) picked = new Set(s) } catch (e) {}
+        let cat = "전체"
+
+        const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]))
+        const catsEl = document.getElementById("cats"), grid = document.getElementById("grid")
+        const countEl = document.getElementById("count"), wishEl = document.getElementById("wish")
+        const q = document.getElementById("q"), sortEl = document.getElementById("sort")
+
+        // category 버튼 만들기: "전체" + 데이터에 있는 분류들(개수 표시)
+        const cats = ["전체", ...new Set(DATA.items.map(i => i.category))]
+        cats.forEach(c => {
+            const n = c === "전체" ? DATA.items.length : DATA.items.filter(i => i.category === c).length
+            const b = document.createElement("button")
+            b.type = "button"; b.textContent = `${c} (${n})`; b.setAttribute("aria-pressed", String(c === cat))
+            b.onclick = () => { cat = c; catsEl.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); render() }
+            catsEl.appendChild(b)
+        })
+
+        function render() {
+            const word = q.value.trim().toLowerCase()
+            let list = DATA.items.filter(i => (cat === "전체" || i.category === cat) &&
+                (!word || i.name.toLowerCase().includes(word) || i.description.toLowerCase().includes(word)))
+            list = list.slice().sort(sortEl.value === "name" ? (a, b) => a.name.localeCompare(b.name, "ko") : (a, b) => b.score - a.score)
+            countEl.textContent = `${list.length}곳`
+            grid.innerHTML = list.length ? list.map(i => `
+                <article class="card">
+                    <span class="badge">${esc(i.category)}</span>
+                    <h3>${esc(i.name)}</h3>
+                    <div class="desc">${esc(i.description)}</div>
+                    <div class="foot">
+                        <span>관심도 <span class="score">${i.score}</span></span>
+                        <span class="src">${/^https?:\/\//.test(i.source) ? `<a href="${esc(i.source)}" target="_blank" rel="noopener">출처</a>` : ""}</span>
+                        <button class="star" type="button" data-name="${esc(i.name)}" aria-pressed="${picked.has(i.name)}" aria-label="가 보고 싶은 곳에 추가">★</button>
+                    </div>
+                </article>`).join("") : `<div class="empty">조건에 맞는 곳이 없어요.</div>`
+            const names = DATA.items.filter(i => picked.has(i.name)).map(i => i.name)
+            wishEl.innerHTML = names.length ? names.map(n => `<span>${esc(n)}</span>`).join("") : `<div class="empty">★을 눌러 가 보고 싶은 곳을 모아 보세요.</div>`
+        }
+
+        grid.onclick = e => {
+            const b = e.target.closest(".star"); if (!b) return
+            const n = b.dataset.name
+            picked.has(n) ? picked.delete(n) : picked.add(n)
+            try { localStorage.setItem("jejuPicked", JSON.stringify([...picked])) } catch (err) {}
+            b.setAttribute("aria-pressed", String(picked.has(n)))
+            render()
+        }
+        q.oninput = render
+        sortEl.onchange = render
+        render()
+    </script>
+</body>
+</html>
