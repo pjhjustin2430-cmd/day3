@@ -1,9 +1,10 @@
 // api/agent.js — 도구를 스스로 골라 쓰는 제주 여행 에이전트 (Vercel 서버 함수)
 // 도구: find_spots(관광지 찾기) · get_weather(날씨, Open-Meteo)
-// 열쇠는 Vercel 환경변수 ANTHROPIC_API_KEY 에서만 읽습니다. 이 파일에 열쇠를 쓰지 마세요.
+// AI: Google Gemini API (함수 호출). 열쇠는 Vercel 환경변수 GEMINI_API_KEY 에서만 읽습니다. 이 파일에 열쇠를 쓰지 마세요.
 // 열쇠가 없으면 '연습 모드' — AI 대신 정해 둔 순서(찾기 → 날씨 → 규칙 판단)로 같은 도구를 씁니다.
 
-const { find_spots, get_weather, TOOLS, SPOTS } = require('./tools');
+const { find_spots, get_weather, GEMINI_TOOLS, SPOTS } = require('./tools');
+const MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
 
 const RAIN = 50;                                            // 판단 규칙: 강수확률 50% 이상이면 실내 위주
 const MAX_TURNS = 5;                                        // 에이전트 반복은 5번까지
@@ -55,13 +56,13 @@ async function practiceAgent(question) {
   return { mode: 'practice', steps, places, judge, weather: w, tip: '연습 모드(정해 둔 순서) · 방문 전 운영 여부를 확인하세요.' };
 }
 
-async function askClaude(key, messages) {
-  const r = await fetch('https://api.anthropic.com/v1/messages', {
+async function askGemini(key, contents) {
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
     method: 'POST',
-    headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-    body: JSON.stringify({ model: process.env.CLAUDE_MODEL || 'claude-haiku-5-5', max_tokens: 800, system: SYSTEM, tools: TOOLS, messages }),
+    headers: { 'x-goog-api-key': key, 'content-type': 'application/json' },
+    body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] }, tools: GEMINI_TOOLS, contents }),
   });
-  if (!r.ok) throw new Error('claude ' + r.status);
+  if (!r.ok) throw new Error('gemini ' + r.status + ' ' + (await r.text()).slice(0, 200));
   return r.json();
 }
 
@@ -70,29 +71,33 @@ module.exports = async (req, res) => {
   const body = req.body || {};
   const question = String(body.question || '').slice(0, 300);
   if (!question.trim()) return res.status(400).json({ error: '질문이 비어 있어요' });
-  const key = process.env.ANTHROPIC_API_KEY;
+  const key = process.env.GEMINI_API_KEY;
   if (!key) return res.status(200).json(await practiceAgent(question));
 
   const steps = [];
-  const messages = [{ role: 'user', content: question }];
+  const contents = [{ role: 'user', parts: [{ text: question }] }];
   let weather = null;
   try {
     for (let turn = 0; turn < MAX_TURNS; turn++) {            // 에이전트 반복: 도구 고르기 → 결과 보기 → 다시 판단
-      const r = await askClaude(key, messages);
-      if (r.stop_reason === 'tool_use') {
-        messages.push({ role: 'assistant', content: r.content });
+      const r = await askGemini(key, contents);
+      const content = r.candidates && r.candidates[0] && r.candidates[0].content;
+      if (!content) throw new Error('gemini 응답이 비어 있음');
+      const parts = content.parts || [];
+      const calls = parts.filter(p => p.functionCall);
+      if (calls.length) {
+        contents.push(content);                               // 모델 응답을 그대로 이어 붙인다
         const results = [];
-        for (const b of r.content) {
-          if (b.type !== 'tool_use') continue;
-          const out = await runTool(b.name, b.input);
-          if (b.name === 'get_weather') weather = out;
-          steps.push({ kind: 'find', text: toolStep(b.name, b.input || {}, out) });
-          results.push({ type: 'tool_result', tool_use_id: b.id, content: JSON.stringify(out) });
+        for (const p of calls) {
+          const { name, args } = p.functionCall;
+          const out = await runTool(name, args);
+          if (name === 'get_weather') weather = out;
+          steps.push({ kind: 'find', text: toolStep(name, args || {}, out) });
+          results.push({ functionResponse: { name, response: out } });
         }
-        messages.push({ role: 'user', content: results });
+        contents.push({ role: 'user', parts: results });
         continue;
       }
-      const text = (r.content || []).map(c => c.text || '').join('');
+      const text = parts.map(p => p.text || '').join('');
       let out;
       try { out = JSON.parse(text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1)); }
       catch (e) { return res.status(200).json({ mode: 'ai', steps, text }); }
@@ -104,6 +109,6 @@ module.exports = async (req, res) => {
     return res.status(200).json({ mode: 'ai', steps, text: '도구를 너무 여러 번 써서 멈췄어요. 질문을 조금 더 구체적으로 해 주세요.' });
   } catch (e) {
     const p = await practiceAgent(question);                  // AI 연결이 안 되면 연습 모드로
-    return res.status(200).json({ ...p, mode: 'error', tip: '잠시 AI 연결이 안 돼 연습 모드로 답했어요.' });
+    return res.status(200).json({ ...p, mode: 'error', tip: '잠시 AI 연결이 안 돼 연습 모드로 답했어요. (' + String(e.message).slice(0, 120) + ')' });
   }
 };

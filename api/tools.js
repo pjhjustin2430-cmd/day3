@@ -66,8 +66,12 @@ const get_weather_tool = {
   },
 };
 
+const TOOLS = [find_spots_tool, get_weather_tool];
+// Gemini 는 같은 설명을 functionDeclarations(parameters) 형태로 받는다
+const GEMINI_TOOLS = [{ functionDeclarations: TOOLS.map(t => ({ name: t.name, description: t.description, parameters: t.input_schema })) }];
+
 module.exports = {
   find_spots, get_weather, find_spots_tool, get_weather_tool,
-  TOOLS: [find_spots_tool, get_weather_tool],
+  TOOLS, GEMINI_TOOLS,
   SPOTS, AREA_NAMES,
 };
